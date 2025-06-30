@@ -26,7 +26,7 @@ end
 
 -- Fonction pour déposer de l'argent.
 -- L'argent est retiré du 'money' (argent liquide) et ajouté au 'bank' (compte bancaire).
-ESX.RegisterServerCallback('mon_script_bancaire:depositMoney', function(source, cb, amount)
+ESX.RegisterServerCallback('esx_eaulmesse_banking:depositMoney', function(source, cb, amount)
     local xPlayer = ESX.GetPlayerFromId(source) -- Récupère l'objet joueur.
     local playerMoney = xPlayer.getMoney()      -- Récupère l'argent liquide du joueur.
 
@@ -48,7 +48,7 @@ end)
 
 -- Fonction pour retirer de l'argent.
 -- L'argent est retiré du 'bank' (compte bancaire) et ajouté au 'money' (argent liquide).
-ESX.RegisterServerCallback('mon_script_bancaire:withdrawMoney', function(source, cb, amount)
+ESX.RegisterServerCallback('esx_eaulmesse_banking:withdrawMoney', function(source, cb, amount)
     local xPlayer = ESX.GetPlayerFromId(source)       -- Récupère l'objet joueur.
     local bankBalance = xPlayer.getAccount('bank').money -- Récupère le solde bancaire.
 
@@ -69,7 +69,7 @@ ESX.RegisterServerCallback('mon_script_bancaire:withdrawMoney', function(source,
 end)
 
 -- Fonction pour transférer de l'argent à un autre joueur.
-ESX.RegisterServerCallback('mon_script_bancaire:transferMoney', function(source, cb, targetId, amount)
+ESX.RegisterServerCallback('esx_eaulmesse_banking', function(source, cb, targetId, amount)
     local xPlayer = ESX.GetPlayerFromId(source)         -- Joueur qui envoie l'argent.
     local xTarget = ESX.GetPlayerFromId(targetId)       -- Joueur qui reçoit l'argent.
     local bankBalance = xPlayer.getAccount('bank').money -- Solde de l'envoyeur.
@@ -102,8 +102,8 @@ end)
 -- [[ EVENTS ]] --
 
 -- Événement appelé par le client pour obtenir le solde bancaire actuel.
-RegisterNetEvent('mon_script_bancaire:getBankBalance')
-AddEventHandler('mon_script_bancaire:getBankBalance', function(cb)
+RegisterNetEvent('esx_eaulmesse_banking:getBankBalance')
+AddEventHandler('esx_eaulmesse_banking:getBankBalance', function(cb)
     local _source = source
     local balance = GetPlayerBankBalance(_source)
     -- Le callback est utilisé pour renvoyer des données du serveur au client.

@@ -3,23 +3,49 @@
 Config = {}
 
 -- [[ PARAMÈTRES BANCAIRES ]] --
-Config.DefaultBankBalance = 1000 -- Solde initial que les nouveaux joueurs reçoivent à la banque.
-Config.MaxDepositAmount   = 1000000 -- Montant maximal qu'un joueur peut déposer en une seule transaction.
-Config.MaxWithdrawAmount  = 1000000 -- Montant maximal qu'un joueur peut retirer en une seule transaction.
+Config.DefaultBankBalance = 1000
+Config.MaxDepositAmount   = 1000000
+Config.MaxWithdrawAmount  = 1000000
 
 -- [[ POINTS D'INTERACTION (ATM / Guichet) ]] --
 -- Ces coordonnées sont des exemples. Tu devras les ajuster pour ton serveur.
--- Tu peux utiliser des outils in-game pour trouver les coordonnées exactes (ex: /coords).
-Config.ATMLocations = {
-    { x = 247.91, y = 221.05, z = 106.28 }, -- Exemple de localisation d'un ATM
-    { x = -131.06, y = -1498.41, z = 5.25 } -- Autre exemple
+-- J'ai adapté la structure pour correspondre à celle que j'ai proposée (coords avec vector3 et type)
+-- Cela rendra ton script plus flexible pour gérer banques ET ATMs avec le même système.
+Config.BankLocations = {
+    -- Banque principale de Legion Square
+    { label = 'Banque Centrale', coords = vector3(250.7, 220.8, 106.2), type = 'bank' },
+    -- ATM à côté du magasin
+    { label = 'ATM Paleto Bay', coords = vector3(-112.5, 6220.7, 30.5), type = 'atm' },
+    { label = 'ATM LS Airport', coords = vector3(-131.06, -1498.41, 5.25), type = 'atm' }, -- Ton exemple d'ATM
+    -- Tu peux ajouter d'autres emplacements ici
 }
 
--- [[ NOTIFICATIONS ]] --
--- Type de notification à utiliser. ESX utilise souvent 'ESX.ShowNotification'.
--- Tu peux le remplacer par ta propre fonction de notification si tu en as une.
-Config.ShowNotification = ESX.ShowNotification
+-- [[ NOTIFICATIONS / LOCALE ]] --
+-- Retire la ligne 'Config.ShowNotification = ESX.ShowNotification'
+-- La fonction de notification sera appelée directement depuis les scripts client/server
+-- là où ESX est déjà chargé et disponible.
+-- Ajoute les messages localisés si tu ne les avais pas déjà :
+Config.Locale = {
+    DepositSuccess   = 'Vous avez déposé %s $ sur votre compte en banque.',
+    WithdrawSuccess  = 'Vous avez retiré %s $ de votre compte en banque.',
+    TransferSuccess  = 'Vous avez transféré %s $ à %s.',
+
+    NotEnoughMoneyWallet = 'Vous n\'avez pas assez d\'argent liquide sur vous.',
+    NotEnoughMoneyBank   = 'Vous n\'avez pas assez d\'argent en banque.',
+    InvalidAmount        = 'Montant invalide. Le montant doit être un nombre positif.',
+    PlayerNotFound       = 'Le joueur avec cet identifiant n\'a pas été trouvé.',
+    CannotTransferToSelf = 'Vous ne pouvez pas vous transférer de l\'argent à vous-même.',
+    GenericError         = 'Une erreur est survenue. Veuillez réessayer.',
+
+    OpenBankPrompt = '[E] Ouvrir la banque',
+    OpenAtmPrompt  = '[E] Utiliser le distributeur',
+}
 
 -- [[ PARAMÈTRES NUI (Interface Utilisateur) ]] --
-Config.OpenBankKey = 38 -- Touche par défaut pour ouvrir l'interface bancaire (par exemple, 38 = E)
-                        -- Liste des codes de touches : https://docs.fivem.net/docs/game-references/controls/
+-- Ces paramètres sont utilisés par la NUI et le client Lua pour la communication.
+Config.NUI = {
+    OpenNUIEvent  = 'esx_eaulmesse_banking:openNUI',
+    CloseNUIEvent = 'esx_eaulmesse_banking:closeNUI',
+}
+
+-- Config.OpenBankKey = 38 -- Si tu préfères une touche configurable, remets ça et utilise-le dans client/main.lua

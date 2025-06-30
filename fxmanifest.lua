@@ -35,8 +35,6 @@ ui_page 'nui/index.html' -- Le point d'entrée de ton interface NUI (ton fichier
 
 files {
     'nui/index.html',    -- Le fichier HTML principal de ton interface
-    'nui/script.js',     -- Ton fichier JavaScript (ton bundle React)
-    'nui/style.css'      -- Ton fichier CSS
 }
 
 -- Ressource locale (pour les traductions si tu veux internationaliser ton script)
