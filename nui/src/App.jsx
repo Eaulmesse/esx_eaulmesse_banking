@@ -1,35 +1,48 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// src/App.jsx
+
+import React, { useEffect, useState } from 'react';
+import './App.css'; // Assure-toi d'importer ton CSS ici
+import BankUI from './components/BankUI'; // Ton composant qui contient le .screen_container
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [isNuiVisible, setIsNuiVisible] = useState(false); // Initialisation à false
+  const [bankData, setBankData] = useState({});
+
+  useEffect(() => {
+    const handleMessage = (event) => {
+      const data = event.data;
+      if (data.type === 'openBank') {
+        setIsNuiVisible(true);
+        setBankData(data);
+      } else if (data.type === 'closeBank') {
+        setIsNuiVisible(false);
+        setBankData({});
+      }
+    };
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, []);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    // Ce div représente ta NUI visible.
+    // Il sera le seul élément enfant de #root (qui est transparent et plein écran).
+    // Sa visibilité est contrôlée ici.
+    <div className="nui-wrapper" >
+      
+      
+      <BankUI
+        locationType={bankData.locationType}
+        playerMoney={bankData.playerMoney}
+        bankBalance={bankData.bankBalance}
+        config={bankData.config}
+        onClose={() => sendMessageToLua('close', {})}
+        onDeposit={(amount) => sendMessageToLua('deposit', { amount: amount })}
+        />
+     
+    </div>
+  );
 }
 
-export default App
+// ... ta fonction sendMessageToLua ...
+
+export default App;

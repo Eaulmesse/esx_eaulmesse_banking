@@ -9,17 +9,37 @@ local HasLoaded = false --Suit le chargement de PlayerData
 Citizen.CreateThread(function()
     while ESX == nil do
         TriggerEvent('esx:getSharedObject', function(obj) ESX = obj end)
-        Citizen.Wait(100) -- Attend un court instant pour éviter de surcharger le CPU
+        Citizen.Wait(100)
     end
     print('[CLIENT] ESX a été chargé avec succès !')
-    -- Une fois ESX chargé, nous pouvons potentiellement récupérer les données initiales du joueur.
-    -- Les événements esx:playerLoaded, etc., continueront de les mettre à jour par la suite.
-    -- Ce n'est pas essentiel pour le SetNuiFocus, mais bonne pratique.
-    -- ESX.TriggerServerCallback('esx:getPlayerInventory', function(inventory)
-    --     PlayerData = inventory -- Ou une structure similaire à celle de esx:playerLoaded
-    -- end)
+
+    -- Attendre que PlayerData soit initialisé, soit par esx:playerLoaded, soit par GetPlayerData
+    while not HasLoaded do
+        -- S'assurer que ESX est bien un objet et non nil
+        if ESX and ESX.IsPlayerLoaded then -- Vérifier si la fonction existe
+            if ESX.IsPlayerLoaded() then
+                PlayerData = ESX.GetPlayerData()
+                if PlayerData and PlayerData.accounts then -- Assurez-vous que PlayerData a la structure attendue
+                    HasLoaded = true
+                    print('[CLIENT] PlayerData récupéré au redémarrage du script (via GetPlayerData).')
+                    -- Affiche des infos pour vérifier
+                    print('[CLIENT] Argent liquide: ' .. PlayerData.money)
+                    if PlayerData.accounts and PlayerData.accounts[1] then
+                         print('[CLIENT] Argent banque (premier compte): ' .. PlayerData.accounts[1].money)
+                    end
+                else
+                    print('[CLIENT] ESX.GetPlayerData() a retourné des données incomplètes ou nulles, réessai...')
+                end
+            else
+                print('[CLIENT] ESX.IsPlayerLoaded() est faux, le joueur n\'est pas encore complètement chargé par ESX.')
+            end
+        else
+            print('[CLIENT] ESX ou ESX.IsPlayerLoaded n\'est pas défini, attente...')
+        end
+        Citizen.Wait(1000) -- Attendre plus longtemps pour être sûr (1 seconde)
+    end
+    print('[CLIENT] PlayerData est maintenant complètement chargé et disponible.')
 end)
--- !!! FIN DU NOUVEAU BLOC !!!
 
 
 -- Événements ESX qui se déclenchent lorsque les données du joueur sont mises à jour.
@@ -59,7 +79,6 @@ end)
 -- Prend en paramètre le type de lieu (bank/atm) pour que la NUI puisse s'adapter.
 
 function OpenNUI(locationType)
-    -- Ancien : if ESX == nil or not PlayerData.accounts then
     if not HasLoaded then -- NOUVEAU : Vérifie HasLoaded au lieu de ESX ou PlayerData.accounts
         print('[ESX_BANK_ADVANCED] PlayerData non disponibles, impossible d\'ouvrir la NUI.')
         ESX.ShowNotification('Vos données ne sont pas encore chargées. Veuillez patienter.') -- Notification au joueur
@@ -68,7 +87,7 @@ function OpenNUI(locationType)
 
     IsNuiOpen = true
     SetNuiFocus(true, true)
-
+    
     ESX.TriggerServerCallback('esx_eaulmesse_banking:getAccountBalance', function(bankBalance)
         SendNuiMessage(json.encode({
             type        = "openBank",

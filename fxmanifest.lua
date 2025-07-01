@@ -1,43 +1,40 @@
--- fxmanifest.lua
+fx_version 'cerulean'
+game 'gta5'
 
-fx_version 'cerulean' -- Version de l'API FiveM, 'cerulean' est la plus récente et recommandée
-game 'gta5'          -- Le jeu pour lequel ce script est conçu
+author 'Eaulmesse'
+description 'Un script bancaire complet pour ESX Legacy'
+version '1.0.0'
 
-author 'Eaulmesse' -- Ton nom ou le nom de ta marque
-description 'Un script bancaire complet pour ESX Legacy' -- Une brève description de ton script
-version '1.0.0'      -- La version actuelle de ton script
-
--- Dépendances requises. 'es_extended' est nécessaire pour utiliser ESX Legacy.
--- Assure-toi que cette ressource est bien démarrée sur ton serveur.
 dependencies {
     'es_extended'
 }
 
--- Fichiers côté client
--- Ces scripts sont exécutés sur chaque client connecté au serveur.
 client_scripts {
-    '@es_extended/locale.lua', -- Inclut le fichier de locale d'ESX pour les traductions
-    'config.lua',              -- Charge le fichier de configuration côté client (pour les paramètres visuels, etc.)
-    'client/main.lua'          -- Le script principal côté client
+    '@es_extended/locale.lua',
+    'config.lua',
+    'client/main.lua'
 }
 
--- Fichiers côté serveur
--- Ces scripts sont exécutés une seule fois côté serveur.
 server_scripts {
-    '@es_extended/locale.lua', -- Inclut le fichier de locale d'ESX pour les traductions
-    'config.lua',              -- Charge le fichier de configuration côté serveur (pour les paramètres de base de données, etc.)
-    'server/main.lua'          -- Le script principal côté serveur
+    '@es_extended/locale.lua',
+    'config.lua',
+    'server/main.lua'
 }
 
 -- Fichiers pour l'interface utilisateur (NUI)
 -- Les fichiers listés ici seront disponibles pour l'interface web.
-ui_page 'nui/index.html' -- Le point d'entrée de ton interface NUI (ton fichier React)
+
+-- Le point d'entrée de ton interface NUI est l'index.html généré par Vite
+-- Il est généralement situé dans le dossier 'dist' après la compilation.
+ui_page 'nui/dist/index.html'
 
 files {
-    'nui/index.html',    -- Le fichier HTML principal de ton interface
+    'nui/dist/index.html',         -- Ton fichier HTML principal généré par Vite
+    'nui/dist/assets/*',           -- **TRÈS IMPORTANT : Inclure tous les assets générés (JS, CSS, images, etc.)**
+                                   -- Le '*' est un wildcard qui inclura tous les fichiers et sous-dossiers
+                                   -- à l'intérieur du dossier 'assets'.
 }
 
--- Ressource locale (pour les traductions si tu veux internationaliser ton script)
 -- locales {
 --     'en',
 --     'fr'
