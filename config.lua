@@ -13,7 +13,7 @@ Config.MaxWithdrawAmount  = 1000000
 -- Cela rendra ton script plus flexible pour gérer banques ET ATMs avec le même système.
 Config.BankLocations = {
     -- Banque principale de Legion Square
-    { label = 'Banque Centrale', coords = vector3(250.7, 220.8, 106.2), type = 'bank' },
+    { label = 'Banque Centrale', coords = vector3(149, -1040, 29), type = 'bank' },
     -- ATM à côté du magasin
     { label = 'ATM Paleto Bay', coords = vector3(-112.5, 6220.7, 30.5), type = 'atm' },
     { label = 'ATM LS Airport', coords = vector3(-131.06, -1498.41, 5.25), type = 'atm' }, -- Ton exemple d'ATM
@@ -48,4 +48,4 @@ Config.NUI = {
     CloseNUIEvent = 'esx_eaulmesse_banking:closeNUI',
 }
 
--- Config.OpenBankKey = 38 -- Si tu préfères une touche configurable, remets ça et utilise-le dans client/main.lua
+Config.OpenBankKey = 38 -- Si tu préfères une touche configurable, remets ça et utilise-le dans client/main.lua
